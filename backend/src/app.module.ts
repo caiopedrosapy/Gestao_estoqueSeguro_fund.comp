@@ -7,7 +7,7 @@ import { EstoquesModule } from './estoques/estoques.module.js';
 import { MovimentacoesModule } from './movimentacoes/movimentacoes.module.js';
 import { AlertasModule } from './alertas/alertas.module.js';
 import { databaseOptions } from './database/options.js';
-
+import { ClimaModule } from './clima/clima.module.js';
 @Module({
   imports: [
     TypeOrmModule.forRoot(databaseOptions),
