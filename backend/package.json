@@ -12,6 +12,7 @@
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
+    "start:clima": "npm run build && node dist/clima.main.js",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main.js",
     "lint": "oxlint --type-aware src/ test/",
@@ -23,6 +24,7 @@
     "migration:run": "npm run build && typeorm migration:run -d dist/database/data-source.js",
     "migration:show": "npm run build && typeorm migration:show -d dist/database/data-source.js",
     "test:fluxo": "npm run build && node --test test/fluxo.test.mjs"
+   
   },
   "dependencies": {
     "@nestjs/common": "^12.0.1",
