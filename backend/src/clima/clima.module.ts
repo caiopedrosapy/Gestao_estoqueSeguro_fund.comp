@@ -6,5 +6,6 @@ import { ClimaService } from './clima.service.js';
 @Module({
   controllers: [ClimaController],
   providers: [ClimaService],
+  exports: [ClimaService],
 })
 export class ClimaModule {}
