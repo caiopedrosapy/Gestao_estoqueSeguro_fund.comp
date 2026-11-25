@@ -1,0 +1,14 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://SUA-API-RENDER.onrender.com/:path*"
+    },
+    {
+      "source": "/clima-api/:path*",
+      "destination": "https://SEU-CLIMA-RENDER.onrender.com/:path*"
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#164f43">
+  <meta name="description" content="Demonstração interativa do Estoque Seguro: produtos, movimentações e proteção do estoque em áreas alagáveis.">
+  <title>Estoque Seguro · Visão geral</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23164f43'/%3E%3Cpath d='M32 10 49 17v15c0 12-17 22-17 22S15 44 15 32V17Z' fill='none' stroke='%23dcf58e' stroke-width='4'/%3E%3Cpath d='m24 31 6 6 12-13' fill='none' stroke='%23dcf58e' stroke-width='4'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#dashboard" aria-label="Estoque Seguro, início"><span class="brand-mark" data-icon="shield"></span><span>estoque<span class="brand-bottom">seguro<span class="brand-dot">.</span></span></span></a>
+      <div class="workspace"><span class="workspace-icon" data-icon="store"></span><span><b>Comércio Palmares</b><small>Unidade demonstrativa</small></span><span class="workspace-chevron" data-icon="chevrons"></span></div>
+      <p class="nav-caption">GESTÃO DO ESTOQUE</p>
+      <nav aria-label="Navegação principal">
+        <a href="#dashboard" data-page="dashboard"><span data-icon="dashboard"></span>Visão geral</a>
+        <a href="#products" data-page="products"><span data-icon="box"></span>Produtos<span class="nav-counter" id="product-count"></span></a>
+        <a href="#movements" data-page="movements"><span data-icon="arrows"></span>Movimentações</a>
+        <a href="#locations" data-page="locations"><span data-icon="pin"></span>Locais</a>
+        <a href="#alerts" data-page="alerts"><span data-icon="bell"></span>Alertas<span class="nav-alert" id="alert-count"></span></a>
+      </nav>
+      <p class="nav-caption second-caption">EXPLORE O PROJETO</p>
+      <nav aria-label="Demonstração"><a href="#simulation" data-page="simulation"><span data-icon="layers"></span>Teste de concorrência<span class="new-dot"></span></a></nav>
+      <div class="sidebar-bottom"><div class="support-card"><span class="support-icon" data-icon="shield"></span><b>Cuidar hoje. Proteger amanhã.</b><p>Mais controle para o seu comércio, em qualquer cenário.</p><button class="text-button" data-action="help">Conheça a demonstração <span data-icon="arrow-right"></span></button></div><button class="help-button" data-action="help"><span data-icon="help"></span>Como usar<span data-icon="arrow-up-right"></span></button><div class="sidebar-foot"><span class="status-dot"></span><span id="connection-state">Conectando à API...</span></div></div>
+    </aside>
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+    <div class="main-shell">
+      <header class="topbar"><div class="topbar-start"><button class="icon-button mobile-menu" data-action="menu" aria-label="Abrir menu"><span data-icon="menu"></span></button><span class="breadcrumb">Painel de controle <span>/</span> <b id="breadcrumb-current">Visão geral</b></span></div><div class="topbar-end"><span class="demo-badge"><span></span>Protótipo integrado</span><button class="notification-button icon-button" data-action="notifications" aria-label="Ver alertas"><span data-icon="bell"></span><i id="notification-dot"></i></button><span class="topbar-divider"></span><div class="user-avatar" title="Perfil ilustrativo">CP</div><div class="user-info"><b>Comércio Palmares</b><small>Administrador · exemplo</small></div></div></header>
+      <div class="demo-notice" id="connection-notice" role="status"><span data-icon="info"></span><p><b>Conectando</b><span>Buscando dados na API de estoque...</span></p><button data-action="refresh-data">Atualizar</button></div>
+      <main id="main" tabindex="-1"></main>
+      <footer class="main-footer"><span>Estoque Seguro <span class="footer-dot">·</span> Gestão que protege.</span><span>Projeto acadêmico · IFPE Palmares <span class="footer-dot">/</span> 2026</span></footer>
+    </div>
+  </div>
+  <dialog id="modal"><div id="modal-content"></div></dialog>
+  <div class="toast-region" id="toasts" role="status" aria-live="polite"></div>
+</body>
+</html>
