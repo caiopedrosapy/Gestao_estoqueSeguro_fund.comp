@@ -18,7 +18,6 @@ O Estoque Seguro busca tornar esse processo mais simples, permitindo que o comer
 * 🔎 Consulta do estoque
 * ⚠️ Identificação de produtos que precisam de atenção
 * 🌧️ Alertas relacionados à chuva e risco de alagamento
-* 👤 Controle de acesso para proprietário e funcionário
 * 📊 Visualização das informações do estoque
 
 ## 🖥️ Como funciona
@@ -42,6 +41,44 @@ Identificação dos produtos que precisam ser protegidos
 ```
 
 
+
+## Executar com Docker
+
+Com o Docker e o Docker Compose v2 em execução, clone este repositório e abra
+um terminal na pasta que contém o arquivo `compose.yaml`. Execute:
+
+```sh
+docker compose up --build --wait
+docker compose ps
+```
+
+A primeira execução precisa de internet para baixar as imagens e dependências.
+Abra [http://localhost:18080](http://localhost:18080) e confira se aparece
+**Protótipo conectado**. O Compose configura o banco local e a API aplica as
+migrações ao iniciar.
+
+| Contêiner | Função |
+| --- | --- |
+| `frontend` | Nginx serve a interface HTML, CSS e JavaScript e encaminha as chamadas do navegador para as APIs. |
+| `api` | API NestJS que processa as operações de estoque e salva os dados no PostgreSQL. |
+| `clima` | Serviço NestJS que consulta medições de chuva da APAC. |
+| `banco` | PostgreSQL 16, com os dados em um volume Docker. |
+
+### Demonstrar o fluxo de estoque
+
+1. Em **Locais**, use **Adicionar local** para criar um local de teste.
+2. Em **Produtos**, use **Adicionar produto** e associe o produto ao local.
+3. Em **Movimentações**, registre uma **Entrada** de 10 unidades para o produto.
+4. Volte a **Produtos** e recarregue a página. O saldo deve mostrar 10 unidades
+   e a entrada deve constar no histórico de **Movimentações**.
+
+Na **Visão geral**, o botão **Consultar APAC** mostra as medições de chuva para
+Palmares. A consulta depende da internet e da disponibilidade da APAC.
+
+Para repetir o teste de concorrência e consultar os resultados da integração,
+veja o [registro de testes](docs/TESTES.md).
+
+Para encerrar, execute `docker compose down`. Os dados permanecem no volume.
 
 ## 👥 Equipe
 

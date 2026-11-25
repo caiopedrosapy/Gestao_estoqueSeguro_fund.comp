@@ -1,0 +1,63 @@
+name: estoque_seguro_integracao
+
+services:
+  banco:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: estoque_seguro_teste
+      POSTGRES_USER: estoque
+      POSTGRES_PASSWORD: estoque_integracao_local
+    volumes:
+      - dados_teste:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U estoque -d estoque_seguro_teste"]
+      interval: 5s
+      timeout: 5s
+      retries: 15
+
+  api:
+    build:
+      context: ./backend
+    environment:
+      DATABASE_URL: postgresql://estoque:estoque_integracao_local@banco:5432/estoque_seguro_teste
+      PORT: 3000
+    command: ["sh", "-c", "node node_modules/typeorm/cli.js migration:run -d dist/database/data-source.js && node dist/main.js"]
+    depends_on:
+      banco:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/produtos').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 5s
+      timeout: 5s
+      retries: 15
+      start_period: 15s
+
+  clima:
+    build:
+      context: ./backend
+    command: ["node", "dist/clima.main.js"]
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3001/').then(r=>process.exit(r.status===404?0:1)).catch(()=>process.exit(1))"]
+      interval: 5s
+      timeout: 5s
+      retries: 15
+      start_period: 10s
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "127.0.0.1:18080:80"
+    depends_on:
+      api:
+        condition: service_healthy
+      clima:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1/ && wget -q -O /dev/null http://127.0.0.1/api/produtos"]
+      interval: 5s
+      timeout: 5s
+      retries: 15
+
+volumes:
+  dados_teste:
