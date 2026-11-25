@@ -1,89 +1,58 @@
-# Registro de Testes do Sistema
+# Testes do Estoque Seguro
 
-## Integrantes da Equipe
+## Integração pelo navegador
 
-|Fez| Nome do Integrante |Ambiente de execução |
-| :--- | :--- | :--- |
-|Produtos|Caio|Powershell|
-|Estoque|David|Thunder Client|
-|Movimentação|Alberto|Postman|
-|Alertas|Rildo|Postman|
+Em 25/11/2026, o protótipo foi validado em Docker no Windows com o código
+integrado no [PR #3](https://github.com/caiopedrosapy/Gestao_estoqueSeguro_fund.comp/pull/3).
+A interface em `http://localhost:18080` conectou à API de estoque. A equipe
+cadastrou um local e um produto, registrou uma entrada e confirmou que o
+saldo e a movimentação continuaram visíveis após recarregar a página.
 
->Nota: Cada membro da equipe fez os teste de maneira separada, com equipamentos diferentes e meios diferentes de execução.
+Para repetir a validação, siga as [instruções do README](../README.md#executar-com-docker).
 
----
-* [Link Branches]([https://github.com/seu-usuario/seu-repositorio](https://github.com/caiopedrosapy/Gestao_estoqueSeguro_area_alagaveis/branches))
----
-## Validação Geral do Projeto
+## Concorrência na API
 
-| Item / Comando | Resultado do Teste |
-| :--- | :--- |
-| **Branch de Execução** | `main` |
-| **Compilação (`npm run build`)** | **OK** — Projeto compilado sem erros de build |
-| **Suíte de Testes (`npm test`)** | **OK** — Todos os testes unitários passaram |
+Na demonstração de 12/11/2026, duas solicitações simultâneas tentaram retirar
+7 unidades de um produto com saldo de 10. A API aceitou uma saída (`HTTP 201`),
+recusou a outra por saldo insuficiente (`HTTP 409`) e manteve o saldo final em
+3 unidades. A ordem das respostas pode variar.
 
----
+Em 25/11/2026, o mesmo script foi executado diretamente contra a API da
+`main` conectada ao PostgreSQL 16. Repetiu o resultado de uma resposta
+`201`, uma `409` e saldo final de 3 unidades.
 
-## Suíte de Testes por Módulo
+Para repetir pelo Nginx, suba o Compose e execute, na raiz do repositório:
 
-### 1. Módulo: Alertas (`/alertas`)
+```sh
+docker compose exec -T -e API_URL=http://frontend/api api node demonstracao-concorrencia.mjs
+```
 
-| Ação / Rota | Descrição do Cenário de Teste | Status / Resultado Esperado |
-| :--- | :--- | :--- |
-| `POST /alertas` | Criação de um novo alerta | **OK** (Status 201 Created) |
-| `GET /alertas` | Listagem geral de alertas | **OK** (Status 200 OK) |
-| `GET /alertas/1` | Consulta de alerta por ID existente | **OK** (Status 200 OK) |
-| `GET /alertas/999` | Consulta com ID inexistente | **OK** (Status 404 Not Found) |
-| `PATCH /alertas/1` | Atualização parcial do alerta | **OK** (Status 200 OK) |
-| `DELETE /alertas/1` | Remoção do alerta | **OK** (Status 200 OK) |
+O script cria um local e um produto fictícios no banco do Compose. Use-o em
+ambiente de teste.
 
----
+## Suíte automatizada do backend
 
-### 2. Módulo: Estoques (`/estoques`)
+Em 25/11/2026, na `main`, a compilação terminou com sucesso. O Vitest
+registrou 1 teste aprovado e a suíte de integração com PostgreSQL 16 registrou
+11 testes aprovados e 0 falhas.
 
-| Ação / Rota | Descrição do Cenário de Teste | Status / Resultado Esperado |
-| :--- | :--- | :--- |
-| `POST /estoques` | Cadastro de novo item de estoque | **OK** (Status 201 Created) |
-| `GET /estoques` | Listagem completa de estoques | **OK** (Status 200 OK) |
-| `GET /estoques/1` | Consulta de item de estoque por ID | **OK** (Status 200 OK) |
-| `PATCH /estoques/1` | Atualização de quantidade/dados de estoque | **OK** (Status 200 OK) |
-| `DELETE /estoques/1` | Exclusão de registro de estoque | **OK** (Status 200 OK) |
+A partir da pasta `backend`, com Node.js 24, execute:
 
----
+```sh
+npm ci
+npm test
+```
 
-### 3. Módulo: Movimentações (`/movimentacoes`)
+Para rodar a suíte de integração, defina `TEST_DATABASE_URL` no ambiente ou
+no arquivo `backend/.env` com a URL de um banco PostgreSQL exclusivo de testes,
+acessível ao Node.js. Execute, ainda na pasta `backend`:
 
-| Ação / Rota | Descrição do Cenário de Teste | Status / Resultado Esperado |
-| :--- | :--- | :--- |
-| `POST /movimentacoes` | Registro de entrada/saída de produto | **OK** (Status 201 Created) |
-| `GET /movimentacoes` | Listagem de histórico de movimentações | **OK** (Status 200 OK) |
-| `GET /movimentacoes/1` | Consulta de movimentação específica | **OK** (Status 200 OK) |
-| `PATCH /movimentacoes/1` | Ajuste em registro de movimentação | **OK** (Status 200 OK) |
-| `DELETE /movimentacoes/1` | Cancelamento/exclusão de movimentação | **OK** (Status 200 OK) |
+```sh
+npm run test:e2e
+```
 
----
-
-### 4. Módulo: Produtos (`/produtos`)
-
-| Ação / Rota | Descrição do Cenário de Teste | Status / Resultado Esperado |
-| :--- | :--- | :--- |
-| `POST /produtos` | Cadastro de novo produto | **OK** (Status 201 Created) |
-| `GET /produtos` | Listagem geral do catálogo de produtos | **OK** (Status 200 OK) |
-| `GET /produtos/1` | Consulta de produto por ID | **OK** (Status 200 OK) |
-| `GET /produtos/999` | Consulta com ID inexistente | **OK** (Status 404 Not Found) |
-| `PATCH /produtos/1` | Atualização de preço/dados do produto | **OK** (Status 200 OK) |
-| `DELETE /produtos/1` | Remoção do produto do sistema | **OK** (Status 200 OK) |
-
----
-
-## Resumo dos Resultados
-
-| Módulo | Total de Testes | Sucesso | Falhas |
-| :--- | :--- | :--- | :--- |
-| **Alertas** | 6 | 6 | 0 |
-| **Estoques** | 5 | 5 | 0 |
-| **Movimentações** | 5 | 5 | 0 |
-| **Produtos** | 6 | 6 | 0 |
-| **Total do Sistema** | **22** | **22** | **0** |
-
-> **Resultado Final:** Todos os cenários de testes executados em todos os módulos apresentaram os resultados esperados, confirmando a integridade das rotas do sistema.
+A suíte aplica as migrações e valida locais, produtos, alertas, filtros e
+regras de movimentação, incluindo saldo insuficiente e saídas simultâneas.
+A API de movimentações oferece criação (`POST /movimentacoes`) e consulta
+(`GET /movimentacoes` e `GET /movimentacoes/:id`). A suíte verifica que
+edição e exclusão diretas são rejeitadas com `HTTP 404`.
