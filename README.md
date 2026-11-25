@@ -18,6 +18,7 @@ O Estoque Seguro busca tornar esse processo mais simples, permitindo que o comer
 * 🔎 Consulta do estoque
 * ⚠️ Identificação de produtos que precisam de atenção
 * 🌧️ Alertas relacionados à chuva e risco de alagamento
+* 👤 Controle de acesso para proprietário e funcionário
 * 📊 Visualização das informações do estoque
 
 ## 🖥️ Como funciona
